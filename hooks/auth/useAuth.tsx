@@ -1,21 +1,23 @@
+"use client"; // Pastikan ini ada di baris pertama
+
 import { useState, useEffect } from 'react';
 
 const useAuth = () => {
   const [token, setToken] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getCookie = (name: string) => {
-      if (typeof window === 'undefined') return null;
-      const match = document.cookie.match(`(^|;)\\s*${name}\\s*=\\s*([^;]+)`);
-      return match ? decodeURIComponent(match[2]) : null;
-    };
+    // Hanya berjalan di browser
+    const tokenFromStorage = localStorage.getItem('token');
+    const userIdFromStorage = localStorage.getItem('userId');
     
-    setToken(getCookie('token'));
-    setUserId(getCookie('userId'));
+    setToken(tokenFromStorage);
+    setUserId(userIdFromStorage);
+    setIsLoading(false);
   }, []);
 
-  return { token, userId };
+  return { token, userId, isLoading };
 };
 
 export default useAuth;

@@ -77,7 +77,7 @@ const transformProductData = (data: any): ProductType => {
   };
 };
 
-const DashboardBody = () => {
+const DashboardBody = (userIds:any) => {
   const { data: session } = useSession();
 
   const [mostRentedProducts, setMostRentedProducts] = useState<ProductType[]>(
