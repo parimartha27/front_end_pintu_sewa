@@ -16,7 +16,7 @@ interface ErrorSchema {
 
 interface ResponseSchema {
   error_schema: ErrorSchema;
-  output_schema: ProductType[];
+  output_schema: any[]; 
 }
 
 const fetchMostRentedProducts = async (): Promise<ResponseSchema> => {
@@ -53,6 +53,30 @@ const fetchRecommendedProducts = async (): Promise<ResponseSchema> => {
   }
 };
 
+const transformProductData = (data: any): ProductType => {
+  return {
+    name: data.name || "",
+    category: data.category || "",
+    rent_category: Number(data.rent_category) || 0,
+    rnb: Boolean(data.rnb),
+    weight: Number(data.weight) || 0,
+    height: Number(data.height) || 0,
+    width: Number(data.width) || 0,
+    length: Number(data.length) || 0,
+    daily_price: Number(data.daily_price) || 0,
+    weekly_price: Number(data.weekly_price) || 0,
+    monthly_price: Number(data.monthly_price) || 0,
+    description: data.description || "",
+    condition_description: data.condition_description || "",
+    stock: Number(data.stock) || 0,
+    status: data.status || "available",
+    image: data.image || "/default-product.png",
+    address: data.address || "",
+    rating: Number(data.rating) || 0,
+    rented_times: Number(data.rented_times) || 0
+  };
+};
+
 const DashboardBody = () => {
   const { data: session } = useSession();
 
@@ -85,10 +109,10 @@ const DashboardBody = () => {
           fetchRecommendedProducts(),
           fetchNearCustomerProducts(userId || ""),
         ]);
-
-        setMostRentedProducts(mostRented.output_schema);
-        setRecommendedProducts(recommended.output_schema);
-        setNearCustomerProducts(nearCustomer.output_schema);
+        
+        setMostRentedProducts(mostRented.output_schema.map(transformProductData));
+        setRecommendedProducts(recommended.output_schema.map(transformProductData));
+        setNearCustomerProducts(nearCustomer.output_schema.map(transformProductData));
 
         setLoading(false);
 
